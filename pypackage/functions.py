@@ -1,5 +1,6 @@
 import math
 
+__all__ = ['FUNCTIONS']
 
 def _condition_if(condition, if_true, if_false):
     return if_true if condition else if_false
@@ -17,7 +18,7 @@ _func_sqrt = math.sqrt
 
 _func_ceil = math.ceil
 
-CONTEXT  = {
+FUNCTIONS  = {
     'MIN': _func_min,
     'MAX': _func_max,
     'ROUND': _func_round,
