@@ -1,4 +1,4 @@
-from pypackage.functions import FUNCTIONS
+from formula_parser.functions import FUNCTIONS
 
 
 class BaseParser:

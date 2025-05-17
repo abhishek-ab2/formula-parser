@@ -1,4 +1,4 @@
-from pypackage import parse_formula
+from formula_parser import parse_formula
 
 
 val = {
@@ -18,5 +18,3 @@ res = parse_formula(
             'EMPLOYEE_PF': True
         }
 )
-
-print(res)

@@ -1,7 +1,9 @@
-from .parser import Parser
 
+from .parser import parse
+from .project_types import FORMULAS, VALUES, CONTEXT
 
-def parse_formula(formulas: dict, initial_values: dict) -> dict:
-    parser = Parser(formulas=formulas, values=initial_values)
-    return parser.get_result()
+__all__ = ['parse_formula']
+
+def parse_formula(formulas: FORMULAS, initial_values: VALUES, context: CONTEXT) -> VALUES:
+    return parse(formulas=formulas, ini_values=initial_values, context=context)
 
