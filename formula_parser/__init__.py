@@ -1,4 +1,3 @@
-
 from .parser import parse
 from .project_types import FORMULAS, VALUES, CONTEXT
 

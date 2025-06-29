@@ -37,7 +37,6 @@ def is_approx_equal(val1: VALUE, val2: VALUE, tolerance: float):
 def value_len(item: Sized):
     return len(item)
 
-
 def format_formula(formula: str):
     result = re.sub(VARIABLE_REGEX, lambda m: m.group(1)[1:-1].strip(), formula)
     return result

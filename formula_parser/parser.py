@@ -1,4 +1,3 @@
-from .parsers.base import BaseParser
 from .parsers.iterative import IterativeParser
 from .parsers.normal_parser import NormalParser
 from .utils import format_formula, resolve_dependency_tree
