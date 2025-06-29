@@ -17,6 +17,4 @@ class BaseParser:
 
     @staticmethod
     def _evaluate_formula(variable: str, formula: str, result: dict, context: dict):
-        if result.get(variable):
-            return
         result[variable] = eval(formula, context, result)

@@ -18,3 +18,4 @@ res = parse_formula(
             'EMPLOYEE_PF': True
         }
 )
+print(res)

@@ -3,12 +3,10 @@ from .project_types import *
 from typing import Sized
 
 VARIABLE_REGEX = r'(\[\s*[a-zA-Z0-9_]+\s*\])'
-FORMATTED_VAR_REGEX = r'\[([a-zA-Z0-9_]+)\]'
-
 
 def get_variables_in_formula(formula: FORMULA) -> set[VARIABLE]:
     variables = set()
-    pattern = FORMATTED_VAR_REGEX
+    pattern = VARIABLE_REGEX
     matches = re.findall(pattern, formula)
     variables.update(matches)
     return variables
@@ -34,7 +32,7 @@ def resolve_dependency_tree(formulas: FORMULAS):
 
 
 def is_approx_equal(val1: VALUE, val2: VALUE, tolerance: float):
-    return (abs(val1) - abs(val2)) <= tolerance
+    return abs(abs(val1) - abs(val2)) <= tolerance
 
 def value_len(item: Sized):
     return len(item)

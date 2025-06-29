@@ -1,19 +1,20 @@
+from copy import deepcopy
+
 from .base import BaseParser
 from ..utils import is_approx_equal
 
+TOLERANCE = 1
+
 class IterativeParser(BaseParser):
-    def __init__(self, max_iterations: int = 50, total: int = 100, *args, **kwargs):
+    def __init__(self, max_iterations: int = 50, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.max_iterations = max_iterations
-        self.total = total
+        self.total = list(self.values.values())[0]
 
     def parse(self, context: dict):
         iteration = 0
-        actual_total = 0
-        tolerance = 1
-
+        current_total = 0
         context = context | self.values
-
         result = {}
 
         for key in self.formulas:
@@ -21,9 +22,10 @@ class IterativeParser(BaseParser):
 
         while (
             iteration < self.max_iterations and
-            not is_approx_equal(actual_total, self.total, tolerance)
+            not is_approx_equal(current_total, self.total, TOLERANCE)
         ):
-
+            prev_result = deepcopy(result)
+            prev_total = current_total
             iteration += 1
 
             for variable, formula in self.formulas.items():
@@ -35,6 +37,9 @@ class IterativeParser(BaseParser):
                 )
 
             vals = list(result.values())
-            actual_total = round(sum(vals), 2)
+            current_total = round(sum(vals), 2)
+
+            if abs(prev_total - self.total) < abs(current_total - self.total):
+                return prev_result
 
         return result
