@@ -1,4 +1,5 @@
 from formula_parser.functions import FUNCTIONS
+from .exceptions import CustomException, get_custom_error, get_error_desc
 
 
 class BaseParser:
@@ -17,4 +18,13 @@ class BaseParser:
 
     @staticmethod
     def _evaluate_formula(variable: str, formula: str, result: dict, context: dict):
-        result[variable] = eval(formula, context, result)
+        try:
+            result[variable] = eval(formula, context, result)
+        except Exception as e:
+            error: type[CustomException] = get_custom_error(e)
+            print(f'''
+                {variable=}
+                {str(e)=}
+                {get_error_desc(e)=}
+''')
+            raise error(field=variable, message=str(e), description=get_error_desc(e))

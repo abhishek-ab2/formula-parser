@@ -39,5 +39,5 @@ def value_len(item: Sized):
 
 def format_formula(formula: str):
     result = re.sub(VARIABLE_REGEX, lambda m: m.group(1)[1:-1].strip(), formula)
-    return result
+    return result.upper()
 
