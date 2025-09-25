@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
         name="formula_parser",
-        version='1.0.0',
+        version='1.0.1',
         packages=find_packages(include=['formula_parser', 'formula_parser.*']),
         install_requires=[
             'ordered-set==4.1.0',
