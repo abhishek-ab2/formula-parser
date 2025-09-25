@@ -41,3 +41,5 @@ def format_formula(formula: str):
     result = re.sub(VARIABLE_REGEX, lambda m: m.group(1)[1:-1].strip(), formula)
     return result.upper()
 
+def round_off(value: float, precision: int = 2):
+    return round(value, precision)

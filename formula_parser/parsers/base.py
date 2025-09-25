@@ -1,5 +1,6 @@
 from formula_parser.functions import FUNCTIONS
 from .exceptions import CustomException, get_custom_error, get_error_desc
+from ..utils import round_off
 
 
 class BaseParser:
@@ -19,7 +20,7 @@ class BaseParser:
     @staticmethod
     def _evaluate_formula(variable: str, formula: str, result: dict, context: dict):
         try:
-            result[variable] = eval(formula, context, result)
+            result[variable] = max(round_off(eval(formula, context, result)), 0)
         except Exception as e:
             error: type[CustomException] = get_custom_error(e)
             print(f'''
