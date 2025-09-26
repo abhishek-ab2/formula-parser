@@ -5,7 +5,7 @@ from .base import BaseParser
 from ..utils import is_approx_equal, round_off
 
 TOLERANCE = 1
-MAX_ITERATIONS = 50
+MAX_ITERATIONS = 100
 MIN_ITERATIONS = 5
 
 
@@ -58,14 +58,14 @@ class IterativeParser(BaseParser):
                 result[key] = self.values.get(key, 0)
 
         # Evenly distribute values from
-        init_value = round_off(self.total / len(result))
+        init_value = round_off(self.total / len(result) * 2)
         for key, val in result.items():
             result[key] = init_value
 
         context |= fixed_values
 
         while (
-                self.max_iterations > iteration < self.min_iterations and
+                self.max_iterations > iteration and
                 not is_approx_equal(current_total, self.total, TOLERANCE)
         ):
             prev_result = deepcopy(result)
@@ -93,5 +93,4 @@ class IterativeParser(BaseParser):
 
             if (abs(prev_total - self.total) < abs(current_total - self.total)) and iteration > self.min_iterations:
                 return prev_result
-        print(sum(list(result.values()) + list(fixed_values.values())), iteration)
         return result | fixed_values

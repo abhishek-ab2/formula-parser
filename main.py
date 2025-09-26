@@ -33,6 +33,7 @@ try:
             {'EMPLOYEE_PF': True, 'EMPLOYEE_HIGHER_PF': False, 'EMPLOYEE_PF_PERCENT': 8, 'EMPLOYEE_WAGE_LIMIT_EMPLOYEE': False, 'EMPLOYEE_WAGE_LIMIT_COMPANY': False, 'EMPLOYEE_FPF_DEDUCTION': False, 'EMPLOYEE_ESIC_APPLICABLE': False, 'EMPLOYEE_PT_APPLICABLE': True}
     )
     print(res)
+    print(f'Sum is {sum(list(res.values()))}')
 except CustomException as e:
     print(e.message)
     print(e.description)
