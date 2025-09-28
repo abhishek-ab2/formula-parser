@@ -31,7 +31,6 @@ class IterativeParser(BaseParser):
                 float(formula)
                 is_numeric = True
             except ValueError as e:
-                print(e)
                 is_numeric = False
             meta = Formula(
                     formula=formula,
