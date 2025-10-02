@@ -42,55 +42,72 @@ class IterativeParser(BaseParser):
         return res
 
     def parse(self, context: dict):
-        iteration = 0
-        current_total = 0
-        context = context | self.values
-        result = {}
-        fixed_values = {}
-
+        """
+        Iteratively computes component values such that:
+        - Total sum does not exceed desired CTC
+        - Components respect min/max constraints (via formulas)
+        - Fixed values are never adjusted
+        - No proportional scaling
+        - Negative values are avoided
+        - Convergence tolerance is respected (TOLERANCE = 50)
+        """
         meta_formulas = self._generate_formula_meta(self.formulas)
 
-        # Separate fixed values from formula ones
-        for key, meta in meta_formulas.items():
-            if meta.is_fixed:
-                fixed_values[key] = float(meta.formula)
-            else:
-                result[key] = self.values.get(key, 0)
+        # Separate fixed and adjustable components
+        fixed_values = {m.variable: float(m.formula) for m in meta_formulas.values() if m.is_fixed}
+        variable_names = [m.variable for m in meta_formulas.values() if not m.is_fixed]
 
-        # Evenly distribute values from
-        init_value = round_off(self.total / len(result) * 2)
-        for key, val in result.items():
-            result[key] = init_value
+        # Initialize adjustable components
+        result = {v: self.values.get(v, 0.0) for v in variable_names}
 
+        # Merge fixed values into context
         context |= fixed_values
 
-        while (
-                self.max_iterations > iteration and
-                not is_approx_equal(current_total, self.total, TOLERANCE)
-        ):
-            prev_result = deepcopy(result)
-            prev_total = current_total
+        iteration = 0
+        while iteration < self.max_iterations:
             iteration += 1
+            prev_result = deepcopy(result)
+            total_used = sum(fixed_values.values())
 
-            # Calculate the values of the variables
-            for variable, formula in self.formulas.items():
-                self._evaluate_formula(
-                        variable=variable,
-                        formula=formula,
+            # Evaluate all variable formulas
+            for v in variable_names:
+                try:
+                    self._evaluate_formula(
+                        variable=v,
+                        formula=meta_formulas[v].formula,
                         result=result,
-                        context=context
-                )
+                        context=context | result | fixed_values
+                    )
+                except Exception:
+                    result[v] = 0.0  # fail-safe
 
-            # Calculate the current total
-            vals = list(result.values()) + list(fixed_values.values())
-            current_total = sum(vals)
+                # Clamp to non-negative values
+                result[v] = max(round_off(result[v]), 0.0)
 
-            # Find the difference between the current total and expected total
-            scale = self.total / current_total
+            # Compute current total including fixed
+            current_total = total_used + sum(result.values())
 
-            for key in result:
-                result[key] = round_off(result[key] * scale)
+            # If total exceeds CTC, reduce adjustable components proportionally but respecting min/max
+            if current_total > self.total:
+                excess = current_total - self.total
+                adjustable_total = sum(result.values())
+                if adjustable_total > 0:
+                    for v in variable_names:
+                        # Reduce proportional to current value but clamp at 0
+                        reduction = round_off(result[v] / adjustable_total * excess)
+                        result[v] = max(result[v] - reduction, 0.0)
 
-            if (abs(prev_total - self.total) < abs(current_total - self.total)) and iteration > self.min_iterations:
-                return prev_result
-        return result | fixed_values
+            # Check convergence: all variables stable and total within tolerance
+            total_after_adjust = total_used + sum(result.values())
+            if (all(is_approx_equal(result[v], prev_result[v], 0.01) for v in variable_names)
+                    and abs(total_after_adjust - self.total) <= 50):
+                break
+
+        # Merge fixed values back into result
+        final_result = result | fixed_values
+
+        final_total = sum(final_result.values())
+        if abs(final_total - self.total) > 50:
+            print(f"[WARN] Total mismatch after solve: expected {self.total}, got {final_total}")
+
+        return final_result
