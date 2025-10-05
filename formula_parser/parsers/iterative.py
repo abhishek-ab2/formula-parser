@@ -83,23 +83,10 @@ class IterativeParser(BaseParser):
                 # Clamp to non-negative values
                 result[v] = max(round_off(result[v]), 0.0)
 
-            # Compute current total including fixed
-            current_total = total_used + sum(result.values())
-
-            # If total exceeds CTC, reduce adjustable components proportionally but respecting min/max
-            if current_total > self.total:
-                excess = current_total - self.total
-                adjustable_total = sum(result.values())
-                if adjustable_total > 0:
-                    for v in variable_names:
-                        # Reduce proportional to current value but clamp at 0
-                        reduction = round_off(result[v] / adjustable_total * excess)
-                        result[v] = max(result[v] - reduction, 0.0)
-
             # Check convergence: all variables stable and total within tolerance
-            total_after_adjust = total_used + sum(result.values())
+            total = total_used + sum(result.values())
             if (all(is_approx_equal(result[v], prev_result[v], 0.01) for v in variable_names)
-                    and abs(total_after_adjust - self.total) <= 50):
+                    and abs(total - self.total) <= TOLERANCE):
                 break
 
         # Merge fixed values back into result
