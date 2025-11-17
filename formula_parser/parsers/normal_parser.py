@@ -1,23 +1,23 @@
 from .base import BaseParser
-from ..utils import value_len
 
 
 class NormalParser(BaseParser):
     def parse(self, context):
-        result = {}
-        for key in self.formulas:
-            result[key] = self.values.get(key, 0)
+        result = {**self.values}
 
-        res = {}
-        for key in sorted(self.dep_tree, reverse=True, key=value_len):
-            res[key] = result[key]
+        variables_to_calculate = [comp for comp in self.components if not comp.is_fixed]
+        fixed_variables = [comp for comp in self.components if comp.is_fixed]
 
-        for variable, formula in self.formulas.items():
+        # for comp in self.components:
+        #     result[comp.name] = self.values.get(comp.name, 0)
+
+        context |= {comp.name: comp.value for comp in fixed_variables}
+
+        for comp in variables_to_calculate:
             self._evaluate_formula(
-                    variable=variable,
-                    formula=formula,
-                    result=res,
-                    context=context
+                component=comp,
+                result=result,
+                context=context | result
             )
 
-        return res
+        return result

@@ -1,9 +1,0 @@
-FORMULA = str
-VARIABLE = str
-VALUE = int | float
-
-CONTEXT = dict[FORMULA, VALUE]
-FORMULAS = dict[VARIABLE, FORMULA]
-VALUES = dict[VARIABLE, VALUE | bool]
-
-USER_CONTEXT = dict[VARIABLE, VALUE | bool]
