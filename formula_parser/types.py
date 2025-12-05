@@ -11,6 +11,7 @@ class ComponentType(Enum):
     ALLOWANCE = 0
     DEDUCTION = 1
     EMPLOYER_ALLOWANCE = 2
+    CUSTOM = 3
 
 
 @dataclass
