@@ -13,9 +13,9 @@ class NormalParser(BaseParser):
 
         context |= {comp.name: comp.value for comp in fixed_variables}
 
-        for comp in variables_to_calculate:
+        for variable in variables_to_calculate:
             self._evaluate_formula(
-                component=comp,
+                component=variable,
                 result=result,
                 context=context | result
             )

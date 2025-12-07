@@ -50,8 +50,8 @@ def _sort_components(components: Iterable[Component], dep_tree: dict[str, set[st
 
 
 def parse(components: Iterable[Component], ini_values, context):
-    _format_formulas(components)
     dep_tree: dict = resolve_dependency_tree(components)
+    _format_formulas(components)
     _format_dep_tree(dep_tree)
 
     components = _sort_components(components, dep_tree)

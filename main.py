@@ -44,14 +44,13 @@ for k, v in formulas.items():
             value=0
         )
     )
-
 try:
     res = parse_formula(
         fms,
         val,
-        {'EMPLOYEE_PF': True, 'EMPLOYEE_HIGHER_PF': False, 'EMPLOYEE_PF_PERCENT': 8,
-         'EMPLOYEE_WAGE_LIMIT_EMPLOYEE': False, 'EMPLOYEE_WAGE_LIMIT_COMPANY': False, 'EMPLOYEE_FPF_DEDUCTION': False,
-         'EMPLOYEE_ESIC_APPLICABLE': False, 'EMPLOYEE_PT_APPLICABLE': True}
+        {'EMPLOYEE_ESIC_APPLICABLE': False, 'EMPLOYEE_FPF_DEDUCTION': True, 'EMPLOYEE_HIGHER_PF': False,
+         'EMPLOYEE_PF': False, 'EMPLOYEE_PF_PERCENT': 8, 'EMPLOYEE_PT_APPLICABLE': False,
+         'EMPLOYEE_WAGE_LIMIT_COMPANY': True, 'EMPLOYEE_WAGE_LIMIT_EMPLOYEE': True}
     )
     print(res)
     for f in fms:

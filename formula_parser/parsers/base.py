@@ -9,11 +9,11 @@ from ..utils import is_approx_equal, round_off
 class BaseParser:
     TOLERANCE = 1
 
-    def __init__(self, components: Iterable[Component], values: dict, dep_tree: dict):
-        self.components = components
+    def __init__(self, components: Iterable[Component], values: dict, dep_tree: dict[str, set]):
         self.values = values
         self.dep_tree = dep_tree
         assert len(self.values) >= 1
+        self.components = sorted(components, key=lambda c: len(self.dep_tree[c.name]), reverse=True)
         self.structure = SalaryStructures(list(self.values.keys())[0])
         self.total = list(self.values.values())[0]
 
